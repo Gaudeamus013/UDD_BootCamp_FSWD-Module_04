@@ -1,0 +1,93 @@
+[
+    {
+        "arrivalDate": "2024-07-12",
+        "departureDate": "2024-07-15",
+        "hotel": "Cabo de Hornos",
+        "roomType": "Single",
+        "guests": "1",
+        "name": "Reynaldo Añasco",
+        "email": "reynaldo.javier@hotmail.com",
+        "paymentStatus": "Pagado"
+    },
+    {
+        "id": 1,
+        "hotel": "Gran Hotel Santiago",
+        "arrivalDate": "2024-07-17",
+        "departureDate": "2024-07-20",
+        "roomType": "Double",
+        "guests": 2,
+        "name": "María González",
+        "email": "maria.gonzalez@gmail.com",
+        "paymentStatus": "Pagado"
+    },
+    {
+        "arrivalDate": "2024-08-05",
+        "departureDate": "2024-08-10",
+        "hotel": "Hotel Plaza San Francisco",
+        "roomType": "Single",
+        "guests": 1,
+        "name": "Pedro Ramírez",
+        "email": "pedro.ramirez@yahoo.com",
+        "paymentStatus": "Pendiente"
+    },
+    {
+        "arrivalDate": "2024-09-22",
+        "departureDate": "2024-09-25",
+        "hotel": "Hotel Cumbres Andinas",
+        "roomType": "Familiar",
+        "guests": 4,
+        "name": "Ana Silva",
+        "email": "ana.silva@hotmail.com",
+        "paymentStatus": "Pagado"
+    },
+    {
+        "arrivalDate": "2024-10-01",
+        "departureDate": "2024-10-07",
+        "hotel": "Hotel Diego de Almagro",
+        "roomType": "Single",
+        "guests": 1,
+        "name": "Juan López",
+        "email": "juan.lopez@outlook.com",
+        "paymentStatus": "Pendiente"
+    },
+    {
+        "arrivalDate": "2024-11-15",
+        "departureDate": "2024-11-18",
+        "hotel": "Hotel NH Collection Santiago Centro",
+        "roomType": "Double",
+        "guests": 2,
+        "name": "Carolina Pérez",
+        "email": "carolina.perez@gmail.com",
+        "paymentStatus": "Pagado"
+    },
+    {
+        "arrivalDate": "2024-12-24",
+        "departureDate": "2024-12-26",
+        "hotel": "The Ritz-Carlton, Santiago",
+        "roomType": "Familiar",
+        "guests": 5,
+        "name": "David Martínez",
+        "email": "david.martinez@yahoo.com",
+        "paymentStatus": "Pendiente"
+    },
+    {
+        "arrivalDate": "2025-01-08",
+        "departureDate": "2025-01-12",
+        "hotel": "Hotel Noi Vitacura",
+        "roomType": "Single",
+        "guests": 1,
+        "name": "Sandra Morales",
+        "email": "sandra.morales@hotmail.com",
+        "paymentStatus": "Pagado"
+    },
+    {
+        "arrivalDate": "2025-02-14",
+        "departureDate": "2025-02-17",
+        "hotel": "Hotel W Santiago",
+        "roomType": "Double",
+        "guests": 2,
+        "name": "Francisco García",
+        "email": "francisco.garcia@outlook.com",
+        "paymentStatus": "Pendiente"
+    }
+]
