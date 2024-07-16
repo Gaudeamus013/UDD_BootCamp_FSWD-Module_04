@@ -304,7 +304,7 @@ exports.filterBookings = (req, res) => {
 
 ```
 
-Con esto listo, tenemos una aplicación que incluyen diferentes servicios.
+Con esto listo, tenemos una aplicación que incluyen diferentes servicios que están relacionados con lo solicitado para formalizar entrega.
 
 ## Archivo con contenido de prueba
 
