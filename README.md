@@ -306,6 +306,10 @@ exports.filterBookings = (req, res) => {
 
 Con esto listo, tenemos una aplicación que incluyen diferentes servicios.
 
+## Archivo con contenido de prueba
+
+Se agrega información en el archivo `reservas.json` con el fin de facilitar pruebas y que sea utilizado.
+
 
 ## Autor
 
