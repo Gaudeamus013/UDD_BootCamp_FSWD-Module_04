@@ -10,12 +10,49 @@ exports.createBooking = (req, res) => {
 };
 
 exports.getBookings = (req, res) => {
-  res.json({ message: 'Obtención de reservas exitosa', bookings });
-};
+  try {
+    let filteredBookings = bookings;
+    const { hotel, date_start, date_end, roomType, paymentStatus, numGuests } = req.query;
 
-exports.getBookingInfo = (req, res) => {
-  const info = bookings.map(booking => booking.getInfo());
-  res.json({ message: 'Obtención de información de reservas exitosa', info });
+    if (hotel) {
+      filteredBookings = filteredBookings.filter(b => b.hotel === hotel);
+    }
+    if (date_start && date_end) {
+      const startDate = new Date(date_start);
+      const endDate = new Date(date_end);
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        filteredBookings = filteredBookings.filter(b => 
+          new Date(b.arrivalDate) >= startDate && new Date(b.departureDate) <= endDate
+        );
+      } else {
+        return res.status(400).json({ message: 'Fechas inválidas' });
+      }
+    } else if (date_start || date_end) {
+      return res.status(400).json({ message: 'Ambas fechas (inicio y fin) deben proporcionarse' });
+    }
+    if (roomType) {
+      filteredBookings = filteredBookings.filter(b => b.roomType === roomType);
+    }
+    if (paymentStatus) {
+      filteredBookings = filteredBookings.filter(b => b.paymentStatus === paymentStatus);
+    }
+    if (numGuests) {
+      const guests = parseInt(numGuests, 10);
+      if (!isNaN(guests)) {
+        filteredBookings = filteredBookings.filter(b => b.guests >= guests);
+      } else {
+        return res.status(400).json({ message: 'Número de huéspedes inválido' });
+      }
+    }
+
+    if (filteredBookings.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron reservas que coincidan con los criterios' });
+    }
+
+    res.json({ message: 'Reservas filtradas exitosamente', filteredBookings });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al filtrar las reservas', error: error.message });
+  }
 };
 
 exports.getBookingById = (req, res) => {
@@ -53,27 +90,4 @@ exports.deleteBooking = (req, res) => {
   } else {
     res.status(404).json({ message: 'Reserva no encontrada' });
   }
-};
-
-exports.filterBookings = (req, res) => {
-  let filteredBookings = bookings;
-  const { hotel, date_start, date_end, roomType, paymentStatus, numGuests } = req.query;
-
-  if (hotel) {
-    filteredBookings = filteredBookings.filter(b => b.hotel === hotel);
-  }
-  if (date_start && date_end) {
-    filteredBookings = filteredBookings.filter(b => new Date(b.arrivalDate) >= new Date(date_start) && new Date(b.departureDate) <= new Date(date_end));
-  }
-  if (roomType) {
-    filteredBookings = filteredBookings.filter(b => b.roomType === roomType);
-  }
-  if (paymentStatus) {
-    filteredBookings = filteredBookings.filter(b => b.paymentStatus === paymentStatus);
-  }
-  if (numGuests) {
-    filteredBookings = filteredBookings.filter(b => b.guests >= parseInt(numGuests));
-  }
-
-  res.json({ message: 'Reserva filtrada exitosamente', filteredBookings });
 };
