@@ -39,16 +39,16 @@ Reserva_Hotelera
 
 |Descripción del Endpoint|	Método|	Endpoint| Ejemplo. Caso de uso. |
 |-----------------------|----------|------------|---------|
-|Crear reserva	| POST| 	/api/reservas|Como viajero, quiero hacer una reserva en el hotel "Hotel Paraíso" para el 15 de mayo de 2023. Necesito una habitación doble para dos adultos y un niño.
-|Obtener la lista de reservas|	GET|	/api/reservas|Como gerente del hotel, quiero ver una lista de todas las reservas para hoy para poder planificar el trabajo del personal de limpieza y recepción.|
+|Crear reserva	| POST| 	/api/booking|Como viajero, quiero hacer una reserva en el hotel "Hotel Paraíso" para el 15 de mayo de 2023. Necesito una habitación doble para dos adultos y un niño.
+|Obtener la lista de reservas|	GET|	/api/booking|Como gerente del hotel, quiero ver una lista de todas las reservas para hoy para poder planificar el trabajo del personal de limpieza y recepción.|
 |Obtener información de una reserva específica	|GET|	/api/reservas/:id|Como recepcionista, necesito verificar los detalles de la reserva del huésped que acaba de llegar al hotel. Su número de reserva es 12345.
-|Actualizar información de una reserva|	PUT|	/api/reservas/:id|Como huésped, necesito cambiar mi reserva en el hotel "Hotel Paraíso". Originalmente reservé una habitación doble, pero ahora necesito una suite familiar. Mi número de reserva es 12345.|
-|Eliminar una reserva específica	|DELETE|	/api/reservas/:id|Como viajero, tuve un cambio de planes y ya no necesito la habitación que reservé en el hotel "Hotel Paraíso". Mi número de reserva es 12345.|
-|Filtrar reservas por hotel|	GET|	/api/reservas?hotel=HOTEL|Como gerente de una cadena de hoteles, quiero ver todas las reservas para el "Hotel Paraíso" para el próximo mes.|
-|Filtrar reservas por rango de fechas|	GET|	/api/reservas?fecha_inicio=FECHA_INICIO&fecha_fin=FECHA_FIN|Como gerente del hotel, quiero ver todas las reservas para la semana de Navidad para poder planificar el personal y las actividades necesarias.|
-|Filtrar reservas por tipo de habitación|	GET|	/api/reservas?tipo_habitacion=TIPO_HABITACION|Como gerente del hotel, quiero ver todas las reservas para nuestras suites de lujo para el próximo mes para asegurarme de que todo esté en perfectas condiciones para nuestros huéspedes VIP.|
-|Filtrar reservas por estado|	GET|	/api/reservas?estado=ESTADO|Como gerente del hotel, quiero ver todas las reservas que están pendientes de pago para poder hacer un seguimiento con los clientes.|
-|Filtrar reservas por número de huéspedes|	GET|	/api/reservas?num_huespedes=NUM_HUESPEDES|Como gerente del hotel, quiero ver todas las reservas para grupos de más de 5 personas para el próximo mes, para poder planificar las necesidades adicionales de estos grupos grandes.|
+|Actualizar información de una reserva|	PUT|	/api/booking/:id|Como huésped, necesito cambiar mi reserva en el hotel "Hotel Paraíso". Originalmente reservé una habitación doble, pero ahora necesito una suite familiar. Mi número de reserva es 12345.|
+|Eliminar una reserva específica	|DELETE|	/api/booking/:id|Como viajero, tuve un cambio de planes y ya no necesito la habitación que reservé en el hotel "Hotel Paraíso". Mi número de reserva es 12345.|
+|Filtrar reservas por hotel|	GET|	/api/booking?hotel=HOTEL|Como gerente de una cadena de hoteles, quiero ver todas las reservas para el "Hotel Paraíso" para el próximo mes.|
+|Filtrar reservas por rango de fechas|	GET|	/api/booking?date_start=FECHA_INICIO&date_end=FECHA_FIN|Como gerente del hotel, quiero ver todas las reservas para la semana de Navidad para poder planificar el personal y las actividades necesarias.|
+|Filtrar reservas por tipo de habitación|	GET|	/api/booking?roomType=TIPO_HABITACION|Como gerente del hotel, quiero ver todas las reservas para nuestras suites de lujo para el próximo mes para asegurarme de que todo esté en perfectas condiciones para nuestros huéspedes VIP.|
+|Filtrar reservas por estado|	GET|	/api/booking?paymentStatus=ESTADO|Como gerente del hotel, quiero ver todas las reservas que están pendientes de pago para poder hacer un seguimiento con los clientes.|
+|Filtrar reservas por número de huéspedes|	GET|	/api/booking?numGuests=NUM_HUESPEDES|Como gerente del hotel, quiero ver todas las reservas para grupos de más de 5 personas para el próximo mes, para poder planificar las necesidades adicionales de estos grupos grandes.|
 
 ## Usar el proyecto
 
@@ -169,16 +169,12 @@ const bookingController = require('../controllers/bookingController');
 router.post('/booking', bookingController.createBooking); // Asociamos el controlador de creación de reservas
 // Endpoint para obtener el listado de las reservas existentes
 router.get('/booking', bookingController.getBookings); // Asociamos el controlador de lectura de todas los reservas
-// Endpoint para obtener la información de la reserva existente
-router.get('/booking', bookingController.getBookingInfo); // Asociamos el controlador para obtener la información de reserva
 // Endpoint para obtener la información de una reserva existente
 router.get('/booking/:id', bookingController.getBookingById); // Asociamos el controlador para obtener una reserva específica
 // Endpoint para actualizar una reserva específica
 router.put('/booking/:id', bookingController.updateBooking); // Asociamos el controlador de actualización de una reserva
 // Endpoint para borrar una reserva
 router.delete('/booking/:id', bookingController.deleteBooking); // Asociamos el controlador para eliminar una reserva
-// Endpoint para filtrar reseerva
-router.get('/booking/filter', bookingController.filterBookings // Asociamos el controlador de filtrado de reservas
 
 // Exportamos el router
 module.exports = router // Exportamos el router para usarlo en otras partes de la aplicación
@@ -214,6 +210,8 @@ class Booking {
 -   Uso de controlador con `./controllers/bookingController.js`
 
 ```javascript
+const Booking = require('../models/Booking');
+const bookings = [];
 // Inicializamos las reservas
 let bookingId = 1;
 
@@ -227,13 +225,49 @@ exports.createBooking = (req, res) => {
 
 // b. Obtención de reserva
 exports.getBookings = (req, res) => {
-  res.json({ message: 'Obtención de reservas exitosa', bookings });
-};
+  try {
+    let filteredBookings = bookings;
+    const { hotel, date_start, date_end, roomType, paymentStatus, numGuests } = req.query;
 
-// c. Obtener información de una reserva
-exports.getBookingInfo = (req, res) => {
-  const info = bookings.map(booking => booking.getInfo());
-  res.json({ message: 'Obtención de información de reservas exitosa', info });
+    if (hotel) {
+      filteredBookings = filteredBookings.filter(b => b.hotel === hotel);
+    }
+    if (date_start && date_end) {
+      const startDate = new Date(date_start);
+      const endDate = new Date(date_end);
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        filteredBookings = filteredBookings.filter(b => 
+          new Date(b.arrivalDate) >= startDate && new Date(b.departureDate) <= endDate
+        );
+      } else {
+        return res.status(400).json({ message: 'Fechas inválidas' });
+      }
+    } else if (date_start || date_end) {
+      return res.status(400).json({ message: 'Ambas fechas (inicio y fin) deben proporcionarse' });
+    }
+    if (roomType) {
+      filteredBookings = filteredBookings.filter(b => b.roomType === roomType);
+    }
+    if (paymentStatus) {
+      filteredBookings = filteredBookings.filter(b => b.paymentStatus === paymentStatus);
+    }
+    if (numGuests) {
+      const guests = parseInt(numGuests, 10);
+      if (!isNaN(guests)) {
+        filteredBookings = filteredBookings.filter(b => b.guests >= guests);
+      } else {
+        return res.status(400).json({ message: 'Número de huéspedes inválido' });
+      }
+    }
+
+    if (filteredBookings.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron reservas que coincidan con los criterios' });
+    }
+
+    res.json({ message: 'Reservas filtradas exitosamente', filteredBookings });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al filtrar las reservas', error: error.message });
+  }
 };
 
 // c. Obtener información de una reserva por ID
@@ -275,33 +309,6 @@ exports.deleteBooking = (req, res) => {
     res.status(404).json({ message: 'Reserva no encontrada' });
   }
 };
-
-// f. Filtrar por reservas
-exports.filterBookings = (req, res) => {
-  let filteredBookings = bookings;
-  const { hotel, date_start, date_end, roomType, paymentStatus, numGuests } = req.query;
-  // Obtenemos los posibles filtros desde la cadena de consulta de la URL
-
-  // Filtramos la lista de pedidos según los criterios proporcionados
-  if (hotel) {
-    filteredBookings = filteredBookings.filter(b => b.hotel === hotel);
-  }
-  if (date_start && date_end) {
-    filteredBookings = filteredBookings.filter(b => new Date(b.arrivalDate) >= new Date(date_start) && new Date(b.departureDate) <= new Date(date_end));
-  }
-  if (roomType) {
-    filteredBookings = filteredBookings.filter(b => b.roomType === roomType);
-  }
-  if (paymentStatus) {
-    filteredBookings = filteredBookings.filter(b => b.paymentStatus === paymentStatus);
-  }
-  if (numGuests) {
-    filteredBookings = filteredBookings.filter(b => b.guests >= parseInt(numGuests));
-  } 
-
-  res.json({ message: 'Reserva filtrada exitosamente', filteredBookings }); // Si encontramos la reserva que coincida que coincidan, respondemos con lo solicitado
-};
-
 ```
 
 Con esto listo, tenemos una aplicación que incluyen diferentes servicios que están relacionados con lo solicitado para formalizar entrega.
